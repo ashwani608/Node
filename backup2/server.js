@@ -9,7 +9,8 @@ app.get('/', function(req, res) {
 app.post('/login', function(req, res) {
     console.log(req.method);
     var jsonString = '';
-   
+    //debugger;
+    //sys.puts(sys.inspect(data));
     req.on('data', function (data) {
         jsonString += data;
     });
@@ -17,6 +18,7 @@ app.post('/login', function(req, res) {
     req.on('end', function () {
         var logindata = qs.parse(jsonString);
         console.log(logindata);
+        debugger;
         if(logindata.name == 'user' && logindata.password == 'user') {
             res.send({'success':true});
         }
