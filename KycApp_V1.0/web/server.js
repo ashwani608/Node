@@ -18,8 +18,15 @@ app.post('/login', function(req, res) {
     req.on('end', function () {
         var logindata = qs.parse(jsonString);
         console.log(logindata);
-        debugger;
-        if(logindata.name == 'user' && logindata.password == 'user') {
+        //debugger;
+        /*if(logindata.name == 'user' && logindata.password == 'user') {
+            res.send({'success':true});
+        }
+        else {
+            res.send({'success':false});
+        }*/
+
+        if(validateLogin(logindata.name, logindata.password)) {
             res.send({'success':true});
         }
         else {
@@ -29,6 +36,42 @@ app.post('/login', function(req, res) {
     
     
 });
+
+function validateLogin(user, pwd)
+{
+    var mysql      = require('mysql');
+    var connection = mysql.createConnection
+    ({
+    host     : 'localhost',
+    user     : 'root',
+    password : 'root',
+    database : 'kyc'
+    });
+
+    connection.connect();
+    var query = 'SELECT password from customer where customerID='+user;
+    console.log(query);
+
+    connection.query(query, function(err, rows, fields) 
+    {
+        if (!err)
+          {  
+            console.log('The solution is: ', rows);
+            console.log('The fields are : ', fields);
+            //var xyz = rows[0].get('password');
+            //console.log('The value is  : ', xyz);
+            console.log('The row value is  : ', rows[0].password);
+            if (pwd == rows)
+                console.log(' validates');
+          }
+        else
+            console.log('Error while performing Query:- '+err.stack);
+    });
+
+    connection.end();
+
+    return true;
+}
 
 app.listen(8080);
 console.log('listening at 8080');
